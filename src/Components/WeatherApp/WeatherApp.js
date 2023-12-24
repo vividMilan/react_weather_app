@@ -15,7 +15,7 @@ const WeatherApp = () => {
   const [temp, setTemp] = useState('')
   const [humidity, setHumidity] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [fetchError, setFetchError] = useState(false)
+  const [fetchError, setFetchError] = useState('')
   const [isMounted, setIsMounted] = useState(false)
 
   const urlBuilder = (city) => {
@@ -32,8 +32,7 @@ const WeatherApp = () => {
 
   const fetchWeather = async () => {
     setIsLoading(true)
-    setIsMounted(false)
-
+    setFetchError('') 
     try {
       const response = await fetch(urlBuilder(searchValue))
       if (!response.ok) {
@@ -49,41 +48,38 @@ const WeatherApp = () => {
     }
   }
 
-  const geoFindMe = () => {
-    try {      
-      if (!navigator.geolocation) {
-        throw new Error("Geo Location Failed")
-      } else {
-        navigator.geolocation.getCurrentPosition(async (position) => {
-          const latitude = position.coords.latitude
-          const longitude = position.coords.longitude
-  
-          const reqUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${process.env.REACT_APP_API_KEY}&units=metric`
-          setIsLoading(true)
-          try {
-            const response = await fetch(reqUrl)
-            if (!response.ok) {
-              throw new Error("Something Went Wrong !")
-            }
-            const data =  await response.json()
-            updateStates(data)
-          } catch (err) {
-            setFetchError(err.message)
-          } finally {
-            setIsLoading(false)
-          }
-        })
-      }
-    } catch (err) {
-      setFetchError(err.message)
-    }
 
-  }
 
-  useEffect(() => {
-    geoFindMe()
+  // const geoFindMe = () => {
+  //   if (!navigator.geolocation) {
+  //     console.log("fasddfasdf")
+  //   } else {
+  //     navigator.geolocation.getCurrentPosition(async (position) => {
+  //       const latitude = position.coords.latitude
+  //       const longitude = position.coords.longitude
 
-  }, [])
+  //       const reqUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${process.env.REACT_APP_API_KEY}&units=metric`
+  //       setIsLoading(true)
+  //       try {
+  //         const response = await fetch(reqUrl)
+  //         if (!response.ok) {
+  //           throw new Error("Something Went Wrong !")
+  //         }
+  //         const data =  await response.json()
+  //         updateStates(data)
+  //       } catch (err) {
+  //         setFetchError(err.message)
+  //       } finally {
+  //         setIsLoading(false)
+  //       }
+  //     })
+  //   }
+
+  // }
+
+  // useEffect(() => {
+  //   geoFindMe()
+  // }, [])
 
   
   if (isMounted) {
